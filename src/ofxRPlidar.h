@@ -13,6 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #pragma once
 
 #include <string>
+#include "ofMain.h"
 #include "ofTypes.h"
 #include "ofThread.h"
 #include "rplidar.h" //RPLIDAR standard sdk, all-in-one header
