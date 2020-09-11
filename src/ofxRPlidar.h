@@ -23,58 +23,59 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include <string>
+
 #include "DoubleBuffer.h"
 #include "ofMain.h"
 #include "ofThread.h"
 #include "ofTypes.h"
 #include "rplidar.h" //RPLIDAR standard sdk, all-in-one header
-#include <string>
 
 namespace rp {
 namespace standalone {
-namespace rplidar {
-class RPlidarDriver;
-}
+    namespace rplidar {
+        class RPlidarDriver;
+    }
 } // namespace standalone
 } // namespace rp
 namespace ofx {
 namespace rplidar {
-namespace device {
-class A2 : ofThread {
-public:
-  struct ScannedData {
-    float angle;
-    float distance;
-    unsigned char quality;
-    bool sync;
-  };
-  A2();
-  virtual ~A2();
-  static std::vector<ofSerialDeviceInfo> getDeviceList();
-  bool connect(const std::string &serial_path, int baud_rate = 115200);
-  bool reconnect(int baud_rate = 115200);
-  bool disconnect();
-  bool isConnected() const;
-  bool start(bool threaded = true);
-  bool stop();
-  void update();
-  bool isFrameNew() const { return is_frame_new_; }
-  std::vector<ScannedData> scan(bool ascend = true);
-  std::vector<ScannedData> getResult();
-  std::string getSerialPath() const { return serial_path_; }
-  std::string getSerialNumber() const;
+    namespace device {
+        class A2 : ofThread {
+        public:
+            struct ScannedData {
+                float angle;
+                float distance;
+                unsigned char quality;
+                bool sync;
+            };
+            A2();
+            virtual ~A2();
+            static std::vector<ofSerialDeviceInfo> getDeviceList();
+            bool connect(const std::string& serial_path, int baud_rate = 115200);
+            bool reconnect(int baud_rate = 115200);
+            bool disconnect();
+            bool isConnected() const;
+            bool start(bool threaded = true);
+            bool stop();
+            void update();
+            bool isFrameNew() const { return is_frame_new_; }
+            std::vector<ScannedData> scan(bool ascend = true);
+            std::vector<ScannedData> getResult();
+            std::string getSerialPath() const { return serial_path_; }
+            std::string getSerialNumber() const;
 
-protected:
-  std::string serial_path_;
-  bool has_new_frame_ = false;
-  bool is_frame_new_ = false;
-  void threadedFunction();
-  DoubleBuffer<std::vector<ScannedData>> result_;
-  rp::standalone::rplidar::RPlidarDriver *driver_;
-  rplidar_response_device_info_t device_info_;
-  rplidar_response_device_health_t health_info_;
-};
-} // namespace device
+        protected:
+            std::string serial_path_;
+            bool has_new_frame_ = false;
+            bool is_frame_new_ = false;
+            void threadedFunction();
+            DoubleBuffer<std::vector<ScannedData>> result_;
+            rp::standalone::rplidar::RPlidarDriver* driver_;
+            rplidar_response_device_info_t device_info_;
+            rplidar_response_device_health_t health_info_;
+        };
+    } // namespace device
 } // namespace rplidar
 } // namespace ofx
 
