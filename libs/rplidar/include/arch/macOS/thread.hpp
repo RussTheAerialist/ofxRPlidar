@@ -3,7 +3,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2019 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -32,13 +32,48 @@
  *
  */
 
-#pragma once
+#include "arch/macOS/arch_macOS.h"
 
-#include <vector>
-#include "hal/types.h"
-#include "rplidar_protocol.h"
-#include "rplidar_cmd.h"
+namespace rp{ namespace hal{
 
-#include "rplidar_driver.h"
+Thread Thread::create(thread_proc_t proc, void * data)
+{
+    Thread newborn(proc, data);
+    
+    // tricky code, we assume pthread_t is not a structure but a word size value
+    assert( sizeof(newborn._handle) >= sizeof(pthread_t));
 
-#define RPLIDAR_SDK_VERSION  "1.12.0"
+    pthread_create((pthread_t *)&newborn._handle, NULL,(void * (*)(void *))proc, data);
+
+    return newborn;
+}
+
+u_result Thread::terminate()
+{
+    if (!this->_handle) return RESULT_OK;
+    
+  //  return pthread_cancel((pthread_t)this->_handle)==0?RESULT_OK:RESULT_OPERATION_FAIL;
+    return RESULT_OK;
+}
+
+u_result Thread::setPriority( priority_val_t p)
+{
+	if (!this->_handle) return RESULT_OPERATION_FAIL;
+    // simply ignore this request
+	return  RESULT_OK;
+}
+
+Thread::priority_val_t Thread::getPriority()
+{
+	return PRIORITY_NORMAL;
+}
+
+u_result Thread::join(unsigned long timeout)
+{
+    if (!this->_handle) return RESULT_OK;
+    
+    pthread_join((pthread_t)(this->_handle), NULL);
+    return RESULT_OK;
+}
+
+}}

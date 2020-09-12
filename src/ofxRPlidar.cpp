@@ -52,7 +52,7 @@ vector<ofSerialDeviceInfo> device::A2::getDeviceList()
 device::A2::A2()
 {
     // create the driver instance
-    driver_ = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
+    driver_ = RPlidarDriver::CreateDriver();
 
     if (!driver_) {
         ofLogError("RPLIDAR", "insufficent memory, exit");
@@ -164,7 +164,7 @@ bool device::A2::isConnected() const
 
 bool device::A2::start(bool threaded)
 {
-    if (isConnected() && !IS_FAIL(driver_->startMotor()) && !IS_FAIL(driver_->startScan(true))) {
+    if (isConnected() && !IS_FAIL(driver_->startMotor()) && !IS_FAIL(driver_->startScanNormal(true))) {
         if (threaded) {
             startThread();
         }

@@ -34,11 +34,14 @@
 
 #pragma once
 
-#include <vector>
 #include "hal/types.h"
-#include "rplidar_protocol.h"
-#include "rplidar_cmd.h"
 
-#include "rplidar_driver.h"
+#define delay(x)   ::Sleep(x)
 
-#define RPLIDAR_SDK_VERSION  "1.12.0"
+namespace rp{ namespace arch{
+    void HPtimer_reset();
+    _u32 getHDTimer();
+}}
+
+#define getms()   rp::arch::getHDTimer()
+
